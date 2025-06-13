@@ -763,13 +763,13 @@ attendreModulePretEtHydrater(JSON.parse(data.fields.horaires));
   }
 
       // Navigation avec sauvegarde
-document.getElementById("prevBtn").addEventListener("click", () => {
-  enregistrerHoraires();
+document.getElementById("prevBtn").addEventListener("click", async () => {
+  await enregistrerHoraires();
   window.location.href = "rib.html"; // 🔁 ou autre page précédente
 });
 
-document.getElementById("nextBtn").addEventListener("click", () => {
-  enregistrerHoraires();
+document.getElementById("nextBtn").addEventListener("click", async () => {
+  await enregistrerHoraires();
   window.location.href = "formation.html"; // 🔁 ou page suivante
 });
   
@@ -838,7 +838,8 @@ function collectHoraires() {
 function enregistrerHoraires() {
   const data = collectHoraires();
   console.log("➡️ Données à enregistrer :", data);
-  sauvegarderDansAirtable(data, true); // true = affichage du message "Enregistrement réussi"
+  // Retourne la promesse pour permettre d'attendre la fin de l'enregistrement
+  return sauvegarderDansAirtable(data, true); // true = affichage du message "Enregistrement réussi"
 }
 
 
