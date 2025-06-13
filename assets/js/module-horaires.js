@@ -99,63 +99,65 @@ document.head.appendChild(style);
 
   const plages = container.querySelectorAll('.plage');
   if (plages.length === 0) {
-    // Réaffiche le bouton init si besoin
-// Réaffiche le texte "Fermé"
-let status = container.querySelector('.ferme');
-if (!status) {
-  status = document.createElement("div");
-  status.className = "ferme";
-  status.textContent = "Fermé";
-}
-container.insertBefore(status, container.querySelector('.plages'));
+    const plagesEl = container.querySelector('.plages');
+    const actions = container.querySelector('.actions');
+    const advanced = container.querySelector('details');
 
-    const initBtn = document.createElement("button");
-    initBtn.type = "button";
-    initBtn.textContent = "+ Ajouter une plage";
-    initBtn.onclick = () => {
-      initBtn.remove();
-      if (status) status.remove();
-      container.querySelector('.plages').appendChild(makePlage(container));
-      container.querySelector('.plages').style.display = "block";
-      container.querySelector('.actions').style.display = "flex";
+    // Réaffiche le texte "Fermé"
+    let status = container.querySelector('.ferme');
+    if (!status) {
+      status = document.createElement('div');
+      status.className = 'ferme';
+      status.textContent = 'Fermé';
+    }
+    container.insertBefore(status, plagesEl);
 
-      const advanced = container.querySelector("details");
-      if (advanced) {
-        advanced.style.display = "block";
-        advanced.open = false;
-      }
-    };
-    container.insertBefore(initBtn, container.querySelector('.plages'));
+    const initBtn = createInitButton(container, plagesEl, actions, advanced, status);
+    container.insertBefore(initBtn, plagesEl);
 
-    // Cache le bloc options avancées
-    const advanced = container.querySelector("details");
     if (advanced) {
-      advanced.style.display = "none";
+      advanced.style.display = 'none';
       advanced.open = false;
     }
 
-    // Réinitialise le champ semaine
-    const freq = container.querySelector("select.frequence");
+    const freq = container.querySelector('select.frequence');
     if (freq) {
-      freq.value = "toutes";
+      freq.value = 'toutes';
     }
 
-    // Réinitialise la case 24h
-    const check24 = container.querySelector("input.ouvert24hCheck");
+    const check24 = container.querySelector('input.ouvert24hCheck');
     if (check24) {
       check24.checked = false;
     }
 
-    // Cache les actions (boutons + Ajouter une plage)
-    container.querySelector('.actions').style.display = "none";
-    container.querySelector('.plages').style.display = "none";
+    actions.style.display = 'none';
+    plagesEl.style.display = 'none';
   }
 };
 
     div.querySelectorAll(".heure").forEach(input => initFlatpickrHeure(input));
  
-    console.log("🧱 makePlage retourne :", div.outerHTML);
+      console.log("🧱 makePlage retourne :", div.outerHTML);
        return div;
+  }
+
+  function createInitButton(container, plages, actions, advanced, status) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = "+ Ajouter une plage";
+    btn.className = "init-ajouter";
+    btn.onclick = () => {
+      btn.remove();
+      if (status) status.remove();
+      plages.appendChild(makePlage(container));
+      plages.style.display = "block";
+      actions.style.display = "flex";
+      if (advanced) {
+        advanced.style.display = "block";
+        advanced.open = false;
+      }
+    };
+    return btn;
   }
 
 
@@ -552,21 +554,7 @@ check24h.addEventListener("change", () => {
   // ✅ Recrée le bouton init s’il n’existe plus
   let initBtn = container.querySelector(".init-ajouter");
   if (!initBtn) {
-    initBtn = document.createElement("button");
-    initBtn.type = "button";
-    initBtn.className = "init-ajouter";
-    initBtn.textContent = "+ Ajouter une plage";
-    initBtn.onclick = () => {
-      initBtn.remove();
-      status.remove();
-      plages.appendChild(makePlage(container));
-      plages.style.display = "block";
-      actions.style.display = "flex";
-      if (advanced) {
-        advanced.style.display = "block";
-        advanced.open = false;
-      }
-    };
+    initBtn = createInitButton(container, plages, actions, advanced, status);
     container.insertBefore(initBtn, plages);
   } else {
     initBtn.style.display = "inline-block";
@@ -606,22 +594,7 @@ check24h.addEventListener("change", () => {
     };
     actions.appendChild(addBtn);
 
-    const initBtn = document.createElement("button");
-    initBtn.type = "button";
-    initBtn.textContent = "+ Ajouter une plage";
-    initBtn.className = "init-ajouter";
-
-    initBtn.onclick = () => {
-      initBtn.remove();
-      status.remove();
-      plages.appendChild(makePlage(container));
-      plages.style.display = "block";
-      actions.style.display = "flex";
-      if (advancedOptions) {
-        advancedOptions.style.display = "block";
-        advancedOptions.open = false;
-      }
-    };
+    const initBtn = createInitButton(container, plages, actions, advancedOptions, status);
 
     container.append(title, status, initBtn, plages, actions);
     if (advancedOptions) container.appendChild(advancedOptions);
