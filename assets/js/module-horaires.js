@@ -861,7 +861,10 @@ async function sauvegarderDansAirtable(data, afficherMessage = false) {
       body: JSON.stringify(payload)
     });
 
-    if (!res.ok) throw new Error(`Erreur HTTP ${res.status}`);
+    if (!res.ok) {
+      const errText = await res.text().catch(() => "");
+      throw new Error(`Erreur HTTP ${res.status} ${errText}`);
+    }
 
     const json = await res.json();
     console.log("✅ Enregistrement réussi via Supabase :", json);
@@ -870,7 +873,7 @@ async function sauvegarderDansAirtable(data, afficherMessage = false) {
     }
     if (afficherMessage) alert("✅ Enregistrement effectué !");
   } catch (err) {
-    console.error("❌ Erreur update-pharmacie :", err);
+    console.error("❌ Erreur update-pharmacie :", err.message || err);
     if (afficherMessage) alert("❌ Erreur lors de l'enregistrement");
   }
 }
