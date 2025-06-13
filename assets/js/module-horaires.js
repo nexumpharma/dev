@@ -852,8 +852,10 @@ async function sauvegarderDansAirtable(data, afficherMessage = false) {
 
   try {
     const token = (await window.supabase.auth.getSession()).data.session.access_token;
+    console.log('🔑 Token extrait :', token ? token.slice(0, 5) + '…' : 'absent');
     const res = await fetch(`${window.config.SUPABASE_FUNCTION_BASE}/update-pharmacie`, {
       method: 'POST',
+      mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -873,7 +875,7 @@ async function sauvegarderDansAirtable(data, afficherMessage = false) {
     }
     if (afficherMessage) alert("✅ Enregistrement effectué !");
   } catch (err) {
-    console.error("❌ Erreur update-pharmacie :", err.message || err);
+    console.error(err);
     if (afficherMessage) alert("❌ Erreur lors de l'enregistrement");
   }
 }
